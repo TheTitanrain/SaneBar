@@ -92,6 +92,11 @@
             "type": "command",
             "command": "ruby \"$CLAUDE_PROJECT_DIR\"/Scripts/sanemaster/hooks/failure_tracker.rb",
             "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "ruby \"$CLAUDE_PROJECT_DIR\"/Scripts/sanemaster/hooks/audit_logger.rb",
+            "timeout": 5
           }
         ]
       },
@@ -102,6 +107,11 @@
             "type": "command",
             "command": "ruby \"$CLAUDE_PROJECT_DIR\"/Scripts/sanemaster/hooks/test_quality_checker.rb",
             "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "ruby \"$CLAUDE_PROJECT_DIR\"/Scripts/sanemaster/hooks/audit_logger.rb",
+            "timeout": 5
           }
         ]
       },
@@ -111,6 +121,11 @@
           {
             "type": "command",
             "command": "ruby \"$CLAUDE_PROJECT_DIR\"/Scripts/sanemaster/hooks/test_quality_checker.rb",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "ruby \"$CLAUDE_PROJECT_DIR\"/Scripts/sanemaster/hooks/audit_logger.rb",
             "timeout": 5
           }
         ]
