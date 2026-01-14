@@ -1,4 +1,25 @@
-# Session Handoff: Find Icon Move Feature Fixed (2026-01-13)
+# Session Handoff: Find Icon Move Feature Fixed + v1.0.5 Release Blocked (2026-01-13)
+
+## ❌ CRITICAL BLOCKER: Notarization Failure
+
+**Status**: v1.0.5 build complete but CANNOT BE NOTARIZED
+
+**Issue**: LaunchAtLogin SPM dependency (v5.0.0) contains unsigned helper binaries in ZIP files:
+- `LaunchAtLoginHelper.zip` and `LaunchAtLoginHelper-with-runtime.zip` contain pre-built binaries
+- These binaries are NOT being re-signed during Xcode build
+- Apple notarization rejects: "The binary is not signed with a valid Developer ID certificate"
+- Affects both x86_64 and arm64 architectures
+
+**Impact**: Cannot release v1.0.5 DMG to public (notarization required for Gatekeeper)
+
+**Solutions** (priority order):
+1. **Remove LaunchAtLogin dependency** - Implement launch-at-login using native ServiceManagement API
+2. **Downgrade LaunchAtLogin** - Try older version without ZIP issue
+3. **Manual signing** - Extract, sign, and repack LaunchAtLogin helper bundles post-build
+
+**Decision Needed**: Fix in v1.0.5 or release as v1.0.6?
+
+---
 
 ## ✅ WORKING STATE - DO NOT MODIFY ICON MOVING LOGIC
 
