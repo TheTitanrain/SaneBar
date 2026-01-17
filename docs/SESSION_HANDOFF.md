@@ -17,12 +17,17 @@
 - Channels researched: Product Hunt, Reddit, HN, review sites, influencers
 - Budget allocated: $129 BetaList + $71 reserve
 
+### Infrastructure (Jan 17) ✅
+- **www.sanebar.com**: Fixed DNS (CNAME → sanebar.com) + GitHub Pages cert
+- **Domain**: Squarespace-managed, transfer to Cloudflare eligible ~March 6, 2026
+- **Screenshots**: All current as of Jan 16 in `docs/images/` (settings-*.png = new sidebar UI)
+
 ---
 
 ## Next Session: Execute This
 
 ### Immediate Actions (Free)
-1. **Submit to MacMenuBar.com** — THE directory for menu bar apps
+1. ~~**Submit to MacMenuBar.com**~~ ✅ Done (emailed Jan 17)
 2. **Email 9to5Mac** — michaelb@9to5mac.com with pitch (template in plan)
 3. **Submit to AlternativeTo** — As Bartender/Hidden Bar alternative
 4. **Start Reddit karma** — Comment in r/macapps for 2 weeks before posting
