@@ -40,28 +40,18 @@ Priority based on: frequency of requests, alignment with vision, implementation 
 ---
 
 ### 2. Find Icon Speed Improvement
-**Priority: HIGH** | **Requests: 2** | **Status: Needs More Work**
+**Priority: HIGH** | **Requests: 2** | **Status: ✅ FIXED v1.0.12**
 
 | Requester | Request | Notes |
 |-----------|---------|-------|
-| u/Elegant_Mobile4311 | "Find Icon function is slow to respond... this feature needs to be polished" | Primary use case for them |
-| bleducnx (Discord) | "searching always takes more than 6 seconds! This makes it unusable" | MBA M2, 19 hidden modules |
+| u/Elegant_Mobile4311 | "Find Icon function is slow to respond..." | Primary use case for them |
+| bleducnx (Discord) | "searching always takes more than 6 seconds!" | MBA M2, 19 hidden modules |
 
-**Implemented (v1.0.3):**
-- Cache-first open + background refresh
-- Longer-lived AX cache + prewarm on launch
-- All/Hidden toggle so the feature stays useful even when nothing is "hidden by SaneBar"
-
-**Still Reported Slow (Jan 11, 2026):**
-- bleducnx reports 6+ seconds on MacBook Air M2
-
-**Investigation (Verified Jan 11, 2026):**
-- Cache pre-warm ✅ implemented (called on launch)
-- Cache validity ✅ 300 seconds (5 minutes)
-- Cache-first loading ✅ `loadCachedApps()` called before `refreshApps()`
-- **Likely cause:** First open BEFORE prewarm completes (race condition)
-- **Or:** User in "Hidden" mode (uses different, slower cache)
-- **Action needed:** Test on fresh launch to confirm timing
+**Fixed (v1.0.12):**
+- Instant tab switching (no reload on tab change)
+- Lazy thumbnail loading with caching
+- Fixed "beach ball" spinning cursor for users with 50+ apps
+- Cache-first open + background refresh (from v1.0.3)
 
 ---
 
@@ -193,24 +183,16 @@ Priority based on: frequency of requests, alignment with vision, implementation 
 ---
 
 ### 10. Auto-Disable on External Monitors
-**Priority: MEDIUM** | **Requests: 1** | **Status: Open**
+**Priority: MEDIUM** | **Requests: 1** | **Status: ✅ IMPLEMENTED v1.0.15**
 
 | Requester | Request | Notes |
 |-----------|---------|-------|
-| u/genius1soum | "I don't want SaneBar to do its job on my external monitor... It should be able to detect external monitor and hide itself" | Reddit, Jan 23 2026 |
+| u/genius1soum | "I don't want SaneBar to do its job on my external monitor..." | Reddit, Jan 23 2026 |
 
-**User's Pain Point:**
-External monitors (24"+) have plenty of space — no need to hide icons. But SaneBar still hides them, forcing the user to click unhide every time they want an icon. Counter-productive on big screens.
-
-**Requested Solutions:**
-1. Auto-detect external monitor (by size or `CGDisplayIsBuiltin`) and disable SaneBar
-2. Option to show icons below notch (like Ice does with NotchNook/MediaMate/Alcove)
-
-**Implementation Notes:**
-- `NSScreen.screens` + `CGDisplayIsBuiltin()` to detect built-in vs external
-- New setting: "Disable on external monitors" toggle
-- Need to handle hot-plugging (monitor connect/disconnect)
-- Estimated effort: 1-2 days
+**Implemented (Jan 23, 2026):**
+- Settings → Rules → "Keep visible on external monitors"
+- Uses `CGDisplayIsBuiltin()` to detect external displays
+- Icons stay visible when on external monitor (plenty of space)
 
 ---
 
