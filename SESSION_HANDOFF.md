@@ -7,32 +7,27 @@
 
 ---
 
-## 🚀 RELEASE v1.0.14 - Ready for Manual Release
+## ✅ RELEASE v1.0.15 - LIVE
 
-**All code pushed to `main`. Manual build/notarize required.**
+**Released via GitHub Actions CI. Appcast updated manually.**
 
-```bash
-# Build, sign, notarize, create DMG, upload to GitHub
-# (Same process as v1.0.12 and v1.0.13)
-```
-
-### What's in v1.0.14:
+### What's in v1.0.15:
 - Experimental Settings tab (beta features + bug reporting)
 - External monitor detection (keep icons visible)
 - Directional scroll, gesture toggle, hide on app change
 - UX improvements (Apple-style toggle patterns)
+- SaneUI migrated to GitHub Swift Package (enables CI builds)
 
 ---
 
-## 📋 CI LIMITATION (Future Reference)
+## 📋 CI STATUS (Jan 23)
 
-**GitHub Actions release workflow cannot build SaneBar** because SaneUI is a local path dependency (`../Projects/SaneUI`).
+**GitHub Actions release workflow NOW WORKS** after migrating SaneUI to GitHub Swift Package.
 
-**Current solution:** Manual releases (works fine)
-
-**Future fix (if needed):** Publish SaneUI as a Swift Package to GitHub, then update all Sane apps to reference by URL. This would enable fully automated CI releases.
-
-**Decision (Jan 23):** Keep manual releases for now. Document for future.
+**Remaining gap:** CI creates releases but does NOT update appcast.xml automatically.
+- Sparkle private key needs to be added to GitHub Secrets
+- Workflow needs appcast update step with EdDSA signature generation
+- For now: manually update appcast.xml after CI releases
 
 ---
 
