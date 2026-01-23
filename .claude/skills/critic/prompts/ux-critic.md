@@ -83,6 +83,20 @@ For each UI element, ask:
 3. "What would Apple do?"
 4. "Does this follow the principle of least surprise?"
 
+### Competitor Comparison (CRITICAL for menu bar apps)
+5. "How does Ice/Bartender handle this?" - If they do it simpler, why are we different?
+6. "Is this option necessary?" - Complexity needs justification
+7. "Would a user from Ice expect this to work this way?" - Don't surprise them
+
+### Conditional UI Red Flags
+Flag immediately when:
+- [ ] Options appear/disappear based on other settings (hidden dependencies)
+- [ ] Two toggles that are mutually exclusive (should be a picker)
+- [ ] Settings that conflict with each other
+- [ ] User can't see all their choices at once
+
+> "If Ice does it one way and we do it differently, we need a GOOD reason."
+
 ---
 
 ## Output Format

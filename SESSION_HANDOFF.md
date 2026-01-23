@@ -1,4 +1,4 @@
-# Session Handoff - Jan 23 2026 (Evening)
+# Session Handoff - Jan 24 2026 (Early Morning)
 
 > **Navigation**
 > | Bugs | Features | How to Work | Releases | Testimonials |
@@ -7,24 +7,135 @@
 
 ---
 
-## 📝 QUEUED FOR v1.0.16 (Monday)
+## 🎯 AUDIT-DRIVEN FIXES (Jan 24 Morning)
 
-### Experimental Tab Text (APPROVED)
-```
-Hey Sane crew! Thank you for clicking on this tab.
+### Marketing/Website Fixes
 
-This exists because you all have many different configurations and setups,
-and I only have my MacBook Air. I'm going to need your help with
-experimental features and testing.
+1. **Comparison table reordered for psychological impact** - `docs/index.html`
+   - **Row 1-5: UNIQUE features** (only SaneBar has them)
+     - Touch ID Lock, Gesture Controls, Smart Triggers, Auto-Hide on App Switch, Menu Bar Spacing
+   - **Row 6-8: ADVANTAGES** (few competitors have)
+     - AppleScript, Visual Zones, External Monitor Support
+   - **Row 9-10: HIGH DEMAND** (common but expected)
+     - Power Search, Per-Icon Hotkeys
+   - **Row 11: TABLE STAKES** (everyone has, moved last)
+     - Icon Management
 
-If you find a bug, please report it.
+2. **Smart Triggers row ADDED** - Was missing from comparison table!
+   - "Auto-reveal on low battery, Wi-Fi, Focus, or app launch" - UNIQUE to SaneBar
 
-❤️ Mr. Sane
+### UX/Jargon Fixes
 
-[Report a Bug]  ·  [View Issues →]
-```
-- Also fix layout so content fits without scrolling
-- Fix Rules UX: Replace conflicting toggles (Gesture toggles / Directional scroll) with a single picker
+3. **Technical jargon replaced with user-friendly labels**
+   - `AppearanceSettingsView.swift`:
+     - Corner Radius: "14pt" → "Round" (Subtle/Soft/Round/Pill/Circle)
+     - Item Spacing: "6pt" → "Normal" (Tight/Normal/Roomy/Wide)
+     - Click Area: "8pt" → "Normal" (Small/Normal/Large/Extra)
+   - `RulesSettingsView.swift`:
+     - Rehide Delay: "5s" → "Quick (5s)" (Quick/Normal/Leisurely/Extended)
+     - Hover Delay: "200ms" → "Quick" (Instant/Quick/Normal/Patient)
+
+4. **Check Now button debounce added** - `GeneralSettingsView.swift`
+   - Shows "Checking…" and disables for 5 seconds after click
+   - Prevents rapid-fire update checks
+
+### Audit Infrastructure Improvements
+
+5. **6 audit prompts REWRITTEN** for expertise-based thinking
+   - `~/.claude/skills/docs-audit/prompts/designer.md` - Audits actual UI polish
+   - `~/.claude/skills/docs-audit/prompts/engineer.md` - Audits code quality
+   - `~/.claude/skills/docs-audit/prompts/marketer.md` - Audits user journey + comparison table psychology
+   - `~/.claude/skills/docs-audit/prompts/user.md` - Audits actual user experience
+   - `~/.claude/skills/docs-audit/prompts/qa.md` - Tries to break the product
+   - `~/.claude/skills/docs-audit/prompts/security.md` - Audits code for vulnerabilities
+
+### Build Status
+- ✅ Build passes
+- Website changes: `docs/index.html`
+- Code changes: `GeneralSettingsView.swift`, `RulesSettingsView.swift`, `AppearanceSettingsView.swift`
+
+---
+
+## 🎨 UX POLISH SESSION (Jan 24 Early Morning)
+
+### Settings UI Improvements (v1.0.16)
+
+1. **Sidebar width increased** - `min: 160, ideal: 180` → `min: 180, ideal: 200`
+   - File: `UI/SettingsView.swift:31`
+
+2. **Hover explanations added** - 43 `.help()` tooltips across all Settings tabs
+   - **General**: 7 tooltips (startup, dock, security, updates, profiles, reset)
+   - **Rules**: 15 tooltips (hiding behavior, revealing, triggers)
+   - **Appearance**: 14 tooltips (divider style, menu bar style, layout)
+   - **Shortcuts**: 7 tooltips (hotkeys, AppleScript)
+   - Coverage: ~7% → ~100%
+
+### Build Status
+- ✅ Build passes
+- Files changed: `SettingsView.swift`, `GeneralSettingsView.swift`, `RulesSettingsView.swift`, `AppearanceSettingsView.swift`, `ShortcutsSettingsView.swift`
+
+---
+
+## 🔧 INFRASTRUCTURE SESSION (Jan 23 Late Night)
+
+### Critical Fixes Applied
+1. **Disabled bypass mode** - SOP enforcement now active again
+2. **Fixed website pricing** - Both sites now show "$5 one-time or build from source"
+3. **Fixed JSON-LD** - Google shows correct $5 price (was $0)
+4. **Killed stale processes** - Orphaned Claude/MCP daemons cleaned up
+
+### SaneProcess Commits Pushed (3)
+- `refactor: Remove memory MCP, add task context tracking`
+- `feat: Add proper skill structure, templates, and release scripts`
+- `fix: Remove test artifacts, document memory MCP removal`
+
+### Website Updates Pushed
+- **saneapps.com**: "Free Forever" → "No Subscriptions"
+- **SaneBar comparison**: Added Gesture Controls, Auto-Hide, External Monitor features
+- **Pricing**: Clarified "$5 one-time or build from source"
+
+### Hookify Investigation Conclusion
+- **Hookify = simple pattern blocking only** (rm -rf, etc.)
+- **Ruby hooks stay primary** - stateful logic can't be replaced
+- **Kept 1 rule**: `block-dangerous-commands.local.md`
+- **Deleted 3 broken rules** that required state
+
+### Pending
+- 18 tests in SaneProcess reference removed memory MCP (documented, hooks work fine)
+- v1.0.16 changes ready but uncommitted
+
+### Gotchas Learned
+- Hookify is stateless - can't count violations or track context
+- Always research before replacing existing systems
+- Website pricing affects both customer trust AND search results (JSON-LD)
+
+---
+
+## ✅ READY FOR v1.0.16 (Monday)
+
+All items complete. Build passes, 206 tests pass.
+
+### Completed This Session:
+
+1. **Gesture Picker** - Replaced confusing `gestureToggles` + `useDirectionalScroll` toggles with single "Gesture behavior" picker
+   - Labels: "Show only" / "Show and hide" (plain English, passes grandma test)
+   - Matches Ice standard behavior
+   - Files: `PersistenceService.swift` (GestureMode enum), `MenuBarManager.swift` (scroll logic), `RulesSettingsView.swift` (UI)
+
+2. **Experimental Tab Text** - Updated to approved friendly version ("Hey Sane crew!")
+   - Buttons now inline with message
+   - File: `ExperimentalSettingsView.swift`
+
+3. **Layout Fix** - Removed ScrollView, content fits without scrolling
+   - File: `ExperimentalSettingsView.swift`
+
+4. **UX Critic Updated** - Added competitor comparison and conditional UI red flags
+   - File: `.claude/skills/critic/prompts/ux-critic.md`
+
+### Rejected This Session (via adversarial audits):
+- ❌ Progressive disclosure / Simple vs Advanced modes - Apple/Ice use flat UI
+- ❌ Removing Find Icon delay - Users need 15s to browse menus
+- ❌ Hiding automatic triggers - They're genuine differentiators
 
 ---
 
