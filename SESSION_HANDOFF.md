@@ -1,9 +1,80 @@
-# Session Handoff - Jan 24 2026 (Early Morning)
+# Session Handoff - Jan 24 2026 (Evening)
 
 > **Navigation**
 > | Bugs | Features | How to Work | Releases | Testimonials |
 > |------|----------|-------------|----------|--------------|
 > | [BUG_TRACKING.md](BUG_TRACKING.md) | [marketing/feature-requests.md](marketing/feature-requests.md) | [DEVELOPMENT.md](DEVELOPMENT.md) | [CHANGELOG.md](CHANGELOG.md) | [marketing/testimonials.md](marketing/testimonials.md) |
+
+---
+
+## 🚀 v1.0.16 RELEASED (Jan 24 Evening)
+
+**Live Now** - GitHub Release + Appcast updated
+
+### Release Includes:
+- **43+ hover tooltips** across all Settings tabs
+- **User-friendly labels** (Round/Quick/Normal instead of pt/ms/s)
+- **Comparison table reordered** - unique features first
+- **Check Now button debounce** - prevents rapid-fire update checks
+
+### Release Artifacts:
+- GitHub: https://github.com/sane-apps/SaneBar/releases/tag/v1.0.16
+- Appcast: https://sanebar.com/appcast.xml (deployed via GitHub Pages)
+- DMG: `releases/SaneBar-1.0.16.dmg` (2,794,071 bytes, notarized)
+
+---
+
+## ⚠️ CRITICAL: NEVER LAUNCH SANEBAR LOCALLY
+
+**Safety hook created**: `.claude/hooks/block-sanebar-launch.rb`
+
+Building SaneBar via CLI (`xcodebuild` with custom derivedDataPath) causes windows to appear **completely offscreen** - invisible and inaccessible. This is a known bug that has never been diagnosed.
+
+### What's Blocked:
+- `open SaneBar.app`
+- `build_run_macos` (XcodeBuildMCP)
+- `./scripts/SaneMaster.rb test_mode`
+
+### What's Allowed:
+- `xcodebuild build` (headless)
+- `xcodebuild test` (unit tests)
+- `./scripts/release.sh` (builds DMG, no launch)
+
+### Potential Fix (NOT VERIFIED):
+```bash
+defaults delete com.sanebar.dev
+defaults delete com.sanebar.app
+rm -rf ~/Library/Saved\ Application\ State/com.sanebar.dev.savedState
+rm -rf ~/Library/Saved\ Application\ State/com.sanebar.app.savedState
+```
+This fixed the issue once (Jan 24) but needs more testing. Documented in `docs/DEBUGGING_MENU_BAR_INTERACTIONS.md`.
+
+---
+
+## 🛡️ CRITICAL: SANE-MEM PROTECTION
+
+**Two days of memory lost on Jan 24** when Sane-Mem was accidentally killed.
+
+### Protection Added:
+`SaneProcess/scripts/hooks/sanetools_checks.rb` now blocks:
+- `kill.*sane-?mem`
+- `killall.*claude-?mem`
+- `pkill.*sane-?mem`
+- `launchctl.*(unload|remove).*claudemem`
+
+### If Sane-Mem Misbehaves:
+1. Check logs: `tail ~/.claude-mem/logs/worker-launchd*.log`
+2. Safe restart: `launchctl kickstart -k gui/$(id -u)/com.claudemem.worker`
+3. **Ask user before any destructive action**
+
+---
+
+## 🔧 SPARKLE SIGNING (Jan 24 Clarification)
+
+**Canonical tool**: `sign_update.swift` in project's `scripts/` folder
+**Keychain entry**: Account `EdDSA Private Key` at service `https://sparkle-project.org`
+
+The prebuilt `Sparkle/bin/sign_update` tool looks for a different account name ("ed25519") and should NOT be used. Always use `sign_update.swift` which reads from the correct keychain entry.
 
 ---
 
