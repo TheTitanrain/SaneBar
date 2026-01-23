@@ -1,4 +1,4 @@
-# Session Handoff - Jan 23 2026 (Updated)
+# Session Handoff - Jan 23 2026 (Evening)
 
 > **Navigation**
 > | Bugs | Features | How to Work | Releases | Testimonials |
@@ -7,7 +7,36 @@
 
 ---
 
-## ⚠️ CRITICAL LEARNING FROM THIS SESSION
+## 🚀 RELEASE v1.0.14 - Ready for Manual Release
+
+**All code pushed to `main`. Manual build/notarize required.**
+
+```bash
+# Build, sign, notarize, create DMG, upload to GitHub
+# (Same process as v1.0.12 and v1.0.13)
+```
+
+### What's in v1.0.14:
+- Experimental Settings tab (beta features + bug reporting)
+- External monitor detection (keep icons visible)
+- Directional scroll, gesture toggle, hide on app change
+- UX improvements (Apple-style toggle patterns)
+
+---
+
+## 📋 CI LIMITATION (Future Reference)
+
+**GitHub Actions release workflow cannot build SaneBar** because SaneUI is a local path dependency (`../Projects/SaneUI`).
+
+**Current solution:** Manual releases (works fine)
+
+**Future fix (if needed):** Publish SaneUI as a Swift Package to GitHub, then update all Sane apps to reference by URL. This would enable fully automated CI releases.
+
+**Decision (Jan 23):** Keep manual releases for now. Document for future.
+
+---
+
+## ⚠️ CRITICAL LEARNING FROM EARLIER SESSION
 
 **Customer-facing text ALWAYS requires explicit approval before posting.**
 
