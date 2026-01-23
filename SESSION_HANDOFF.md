@@ -7,6 +7,26 @@
 
 ---
 
+## 📝 QUEUED FOR v1.0.16 (Monday)
+
+### Experimental Tab Text (APPROVED)
+```
+Hey Sane crew! Thank you for clicking on this tab.
+
+This exists because you all have many different configurations and setups,
+and I only have my MacBook Air. I'm going to need your help with
+experimental features and testing.
+
+If you find a bug, please report it.
+
+❤️ Mr. Sane
+
+[Report a Bug]  ·  [View Issues →]
+```
+- Also fix layout so content fits without scrolling
+
+---
+
 ## ✅ RELEASE v1.0.15 - LIVE
 
 **Released via GitHub Actions CI. Appcast updated manually.**
