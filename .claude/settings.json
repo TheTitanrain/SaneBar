@@ -66,6 +66,16 @@
             "timeout": 5
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "ruby /Users/sj/SaneApps/apps/SaneBar/.claude/hooks/block-sanebar-launch.rb",
+            "timeout": 3
+          }
+        ]
       }
     ],
     "PostToolUse": [
