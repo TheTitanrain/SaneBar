@@ -1,11 +1,139 @@
 # Outreach Configuration for SaneBar
-# Used by: ~/.claude/skills/outreach/check.rb
+# Used by: ~/.claude/skills/outreach/SKILL.md
+# KEEP THIS UPDATED — it's the source of truth for launches, outreach, and competitor responses.
 
 project:
   name: "SaneBar"
   url: "https://sanebar.com"
+  github: "sane-apps/SaneBar"
   tagline: "Clean up your menu bar. Keep your head."
 
+# --- KNOWN FACTS (don't re-explain these) ---
+known_facts:
+  - "Lemon Squeezy delivers downloads directly on purchase page. Bounced emails are NOT a problem — customers already have their download. Many use throwaway emails for privacy."
+  - "SaneBar is unsandboxed (Accessibility API requires it). Distribution is DMG, not Mac App Store."
+  - "GitHub releases are public — use Cloudflare R2 (dist.sanebar.com) for gated downloads."
+  - "Sparkle handles auto-updates via appcast.xml on sanebar.com (GitHub Pages)."
+  - "Touch ID lock is the #1 unique feature. No competitor has it."
+
+# --- ACTIVE LAUNCHES ---
+launches:
+  - platform: "Product Hunt"
+    url: "https://www.producthunt.com/posts/sanebar"
+    date: "2026-01-24"
+    status: "live"
+    notes: "Received PH badge. Peak sales day was Jan 25 (42 orders)."
+
+  - platform: "LaunchIgniter"
+    url: "https://launchigniter.com/launch/sanebar"
+    date: "2026-01-26"
+    status: "live"
+    notes: "Launched Jan 26. Early — monitor for traction."
+
+# --- COMPETITOR RESPONSES (already posted — don't suggest re-posting) ---
+competitor_responses:
+  - repo: "jordanbaird/Ice"
+    issue: 823
+    title: "Are we ever getting a stable version for macOS Tahoe?"
+    responded: true
+    date: "2026-01-24"
+    outcome: "Active conversation. KaKi87 asked about brew/reorder — answered. Pushed back on $5 price — defended calmly."
+
+  - platform: "vvmac.fr"
+    url: "https://vvmac.fr/wordpress_b/sanebar-1-0-11-il-gere-de-facon-inedite-les-modules-de-barre-de-menus/"
+    date_found: "2026-01-19"
+    type: "organic_press"
+    tone: "cautiously positive"
+    comments: 0
+    action: "Friends to comment. 0 comments — first mover advantage."
+    notes: "French Mac blog. Praised Touch ID + stability. Reviewer prefers Barbee for his edge case. Review of v1.0.11."
+
+  - platform: "ifun.de"
+    url: "https://www.ifun.de/menueleisten-management-mit-tightermenubar-und-sanebar-273129/"
+    date_found: "2026-01-23"
+    type: "organic_press"
+    tone: "positive"
+    comments: 11
+    action: "Friends commenting to advocate. Check back later."
+    notes: "German tech blog. Highlighted Touch ID + Smart Triggers. 23 views / 17 unique to GitHub."
+
+  - repo: "dwarvesf/hidden"
+    issue: 339
+    title: "Someone called SaneBar 'ai slop'"
+    responded: false
+    date_found: "2026-01-24"
+    notes: "Perception issue. Don't engage — let the product speak."
+
+# --- INFLUENCER OUTREACH ---
+influencer_outreach:
+  sent:
+    - name: "MacVince"
+      email: "hello.macvince@gmail.com"
+      date: "2026-01-24"
+      followup: "2026-01-25"
+      reply: null
+      template: "aesthetic"
+
+    - name: "ThisIsE"
+      email: "thisise@toptechtubers.com"
+      date: "2026-01-24"
+      reply: null
+      template: "productivity"
+
+    - name: "Brandon Butch"
+      email: "hello@brandonbutch.com"
+      date: "2026-01-24"
+      reply: null
+      template: "productivity"
+
+    - name: "Patrick Rambles"
+      email: "info@patrickrambles.com"
+      date: "2026-01-26"
+      reply: null
+      template: "productivity"
+      subject: "A new open-source menu bar manager..."
+      bullets_lead: "Smart Triggers"
+
+    - name: "Francesco D'Alessio (Keep Productive)"
+      email: "francesco@keepproductive.com"
+      date: "2026-01-26"
+      reply: null
+      template: "productivity"
+      subject: "A new open-source menu bar manager..."
+      hook: "I love that you focus on tools that...help maintain focus! I got one for you:"
+
+    - name: "SpawnPoiint (Chris)"
+      email: "collab@spawnpoiint.com"
+      date: "2026-01-26"
+      reply: null
+      template: "aesthetic"
+      subject: "Fixing the menu bar clutter (Native App)..."
+      hook: "Your desk setup videos are some of the cleanest on YouTube — I got something that'll make your Mac match the rest of your setup:"
+
+  pending_contacts: 20
+  contacts_file: "~/Desktop/SaneBar-Marketing-Kit/OUTREACH_CONTACTS.md"
+  templates_dir: "~/Desktop/SaneBar-Marketing-Kit/email-templates/"
+  max_per_day: 5
+  rule: "Wait 4+ days before follow-up. Influencers get tons of email."
+
+# --- CUSTOMER CONVERSATIONS ---
+customer_conversations:
+  - name: "James Turnbull"
+    email: "james@ltl.so"
+    thread: "Thanks for grabbing SaneBar"
+    status: "sent"
+    date: "2026-01-26"
+    notes: "Tech author (Docker Book, Terraform Book), ex-CTO Kickstarter, ex-VP Docker. Paying customer. Sent same-day thank-you. No ask — just welcome. Monitor for reply."
+    type: "vip_customer"
+
+  - name: "Mac Nerd"
+    email: "macnerd1@proton.me"
+    thread: "SaneBar roadmap - we implemented most of it!"
+    status: "active"
+    last_reply: "2026-01-25"
+    notes: "Positive. On Intel. Gave roadmap feedback."
+
+# --- COMPETITORS ---
 competitors:
   - repo: "jordanbaird/Ice"
     name: "Ice"
@@ -31,7 +159,7 @@ competitors:
       - "macOS 26"
       - "macOS 15"
       - "abandoned"
-    min_age_days: 3  # Explicitly abandoned, faster response OK
+    min_age_days: 3
 
   - repo: "Mortennn/Dozer"
     name: "Dozer"
@@ -40,16 +168,71 @@ competitors:
       - "not working"
       - "macOS 15"
       - "macOS 26"
-    min_age_days: 3  # Abandoned since 2023
+    min_age_days: 3
+
+# --- SEARCH KEYWORDS (Reddit + HN monitoring) ---
+# Be SPECIFIC - generic terms like "Ice alternative" match unrelated content
+search_keywords:
+  - "menu bar manager macOS"
+  - "Bartender app alternative mac"
+  - "macOS menu bar cluttered"
+  - "SaneBar"
+  - "menu bar icons too many mac"
+  - "Bartender macOS Tahoe"
+  - "Ice app macOS menu bar"
+
+# Subreddits to restrict Reddit search (empty = all subreddits)
+reddit_subreddits:
+  - "MacOS"
+  - "macapps"
+  - "mac"
+  - "apple"
+  - "macsetups"
+
+# Pain points to search for
+pain_points:
+  - "menu bar cluttered macOS"
+  - "hide menu bar icons mac"
+  - "macOS Tahoe menu bar broken"
+
+# --- APP STORE COMPETITOR REVIEWS ---
+competitor_apps:
+  - name: "Ice"
+    app_store_id: "6446916425"
+  - name: "Hidden Bar"
+    app_store_id: "1452453066"
 
 # Features SaneBar has that competitors lack/struggle with
 features_we_have:
+  - "Touch ID lock for hidden icons"
   - "spacers between icons"
   - "macOS 26 (Tahoe) native support"
+  - "Smart Triggers (battery, Wi-Fi, Focus, app launch)"
   - "low memory footprint"
   - "active maintenance"
   - "AppleScript support"
+  - "external monitor detection"
+  - "gesture controls"
+
+# --- RECURRING TASKS ---
+recurring:
+  - task: "Search X for SaneBar mentions"
+    frequency: "every 2-3 days"
+    how: "Search 'sanebar' on X. Reply to anyone talking about it. Engage, don't pitch."
+    last_done: "2026-01-26"
+
+  - task: "Check ifun.de + vvmac.fr comments"
+    frequency: "weekly"
+    how: "WebFetch both article URLs, check for new comments."
+    last_done: "2026-01-26"
+
+  - task: "Send next influencer batch"
+    frequency: "daily (max 5/day)"
+    how: "Pick next contacts from OUTREACH_CONTACTS.md, find emails, draft, send."
+    last_done: "2026-01-26"
+    sent_today: 3
 
 output:
   notify: true
   log_file: "marketing/outreach_log.md"
+  cache_file: "~/.cache/outreach/SaneBar.json"

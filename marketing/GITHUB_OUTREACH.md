@@ -14,6 +14,19 @@
 
 ---
 
+## Guide Citation Strategy (High Trust)
+
+**Core Principle:** Don't just link the homepage. Link the *specific guide* that solves their problem. This builds authority and reduces "spam" perception.
+
+| User Pain Point | Link Target | Context to Use |
+|-----------------|-------------|----------------|
+| **Privacy / Security** | `https://sanebar.com/docs/how-to-lock-menu-bar-icons-touch-id.html` | "How do I lock icons?" "Is this secure?" "Can I hide VPN status?" |
+| **Notch / Spacing** | `https://sanebar.com/docs/how-to-reorder-menu-bar-icons-mac.html` | "Icons disappearing behind notch", "Menu bar too full" |
+| **Clutter / Hiding** | `https://sanebar.com/docs/how-to-hide-menu-bar-icons-mac.html` | "Too many icons", "How to hide items" |
+| **General / "Alternative"** | `https://sanebar.com` | Generic "What's a good alternative?" |
+
+---
+
 ## High-Value Opportunities (EASY WINS)
 
 ### Tier 1: Explicit "What Alternative?" Asks
@@ -69,6 +82,17 @@ Hope you find something that works!
 Just wanted to mention - if you're still looking for this, [SaneBar](https://sanebar.com)
 has [feature] built in. I switched after running into similar issues. It's $5 or free
 to build from source.
+```
+
+### Template B2: The "Citation" Response (Higher Trust)
+*Use this when the user describes a specific problem like the Notch or Privacy.*
+
+```markdown
+This is actually a common issue with [specific problem].
+We wrote a guide on how to fix this (manual vs software method) here:
+[How to Fix Menu Bar Spacing on Mac](https://sanebar.com/docs/how-to-reorder-menu-bar-icons-mac.html)
+
+TL;DR: You can tweak `NSStatusItemSpacing` defaults in Terminal, or SaneBar handles it natively.
 ```
 
 ### Template C: macOS Compatibility Response
