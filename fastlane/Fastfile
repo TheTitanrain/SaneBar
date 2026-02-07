@@ -3,9 +3,9 @@
 default_platform(:mac)
 
 # App Store Connect API Key configuration
-API_KEY_ID = "7LMFF3A258"
+API_KEY_ID = "S34998ZCRT"
 API_KEY_ISSUER_ID = "c98b1e0a-8d10-4fce-a417-536b31c09bfb"
-API_KEY_PATH = File.expand_path("keys/AuthKey_7LMFF3A258.p8", __dir__)
+API_KEY_PATH = File.expand_path("../../..", __dir__) + "/../.private_keys/AuthKey_S34998ZCRT.p8"
 
 platform :mac do
   desc "Get App Store Connect API key"
