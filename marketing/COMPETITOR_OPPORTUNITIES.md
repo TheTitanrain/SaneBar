@@ -42,7 +42,7 @@ Hidden Bar is abandoned - doesn't work on macOS Tahoe at all.
 
 ### Key Quote
 > "sanebar.com opensource, and active. no problems with Tahoe"
-> — stephanjoseph on #336 (already promoting us!)
+> — MrSaneApps on #336
 
 ### ⚠️ Perception Issue
 On #339, someone called SaneBar "ai slop" and said it has "minimal features". Got 2 thumbs down.

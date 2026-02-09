@@ -24,7 +24,7 @@ It's free, works on macOS 15 Sequoia and the upcoming Tahoe with Liquid Glass su
 **Links:**
 - Website: https://sanebar.com
 - GitHub: https://github.com/sane-apps/SaneBar (open source, build from source free)
-- Purchase: $5 at sanebar.com (notarized DMG)
+- Purchase: $6.99 at sanebar.com (notarized DMG)
 
 Happy to provide screenshots, promo codes, or answer any questions.
 
@@ -62,10 +62,10 @@ Built as a privacy-focused alternative after trust concerns around the Bartender
 
 **App Name:** SaneBar
 **Version:** 1.0.5
-**Developer:** Stephan Joseph
+**Developer:** Mr. Sane
 **Website:** https://sanebar.com/
-**Download URL:** https://github.com/sane-apps/SaneBar/releases
-**License:** MIT (Free, Open Source)
+**Download URL:** https://sanebar.com
+**License:** GPL v3 (Free, Open Source)
 **OS:** macOS 15.0+ (Sequoia)
 
 **Description:**
