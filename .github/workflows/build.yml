@@ -20,12 +20,21 @@ jobs:
         run: |
           echo "No extra deps configured"
 
-      - name: Clean & Archive Release (unsigned)
+      - name: Clean & Archive Release (ad-hoc signed)
         run: |
           set -e
           mkdir -p build
-          xcodebuild clean -scheme SaneBar -configuration Release CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
-          xcodebuild -scheme SaneBar -configuration Release -archivePath build/SaneBar.xcarchive archive CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
+          xcodebuild clean -scheme SaneBar -configuration Release \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=YES \
+            CODE_SIGNING_ALLOWED=YES \
+            CODE_SIGN_ENTITLEMENTS=SaneBar/SaneBar.entitlements
+          xcodebuild -scheme SaneBar -configuration Release \
+            -archivePath build/SaneBar.xcarchive archive \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=YES \
+            CODE_SIGNING_ALLOWED=YES \
+            CODE_SIGN_ENTITLEMENTS=SaneBar/SaneBar.entitlements
 
       - name: Package .app -> .zip and .dmg
         run: |
