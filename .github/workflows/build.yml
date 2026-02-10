@@ -1,4 +1,4 @@
-name: macOS CI & Release (unsigned)
+name: macOS CI & Release (unsigned, archive)
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: Build (macOS Release, unsigned)
+    name: Build (macOS Release, unsigned archive)
     runs-on: macos-latest
 
     steps:
@@ -18,26 +18,24 @@ jobs:
 
       - name: Install dependencies (if any)
         run: |
-          # Добавьте команды по необходимости (CocoaPods, SwiftPM и т.п.)
           echo "No extra deps configured"
 
-      - name: Clean & Build Release (unsigned)
+      - name: Clean & Archive Release (unsigned)
         run: |
           set -e
           mkdir -p build
+          # Отключаем кодовую подпись при архивировании
           xcodebuild clean -scheme SaneBar -configuration Release CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
-          xcodebuild -scheme SaneBar -configuration Release -sdk macosx BUILD_DIR=build CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
+          xcodebuild -scheme SaneBar -configuration Release -archivePath build/SaneBar.xcarchive archive CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
 
       - name: Package .app -> .zip and .dmg
         run: |
           set -e
-          APP_PATH="build/Release/SaneBar.app"
+          APP_PATH="build/SaneBar.xcarchive/Products/Applications/SaneBar.app"
           if [ -d "$APP_PATH" ]; then
             cp -R "$APP_PATH" build/
             pushd build
-            # Zip (with resource forks preserved)
             ditto -c -k --sequesterRsrc --keepParent "SaneBar.app" "SaneBar.zip"
-            # DMG (compressed, unsigned)
             hdiutil create -volname "SaneBar" -srcfolder "SaneBar.app" -ov -format UDZO "SaneBar.dmg"
             popd
           else
