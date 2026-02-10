@@ -1,4 +1,4 @@
-name: macOS CI & Release
+name: macOS CI & Release (unsigned)
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: Build (macOS Release)
+    name: Build (macOS Release, unsigned)
     runs-on: macos-latest
 
     steps:
@@ -18,21 +18,20 @@ jobs:
 
       - name: Install dependencies (if any)
         run: |
-          # Добавьте тут команды для установки зависимостей, если у вас есть (например, CocoaPods)
-          # pod install --project-directory=.
+          # Добавьте команды по необходимости (CocoaPods, SwiftPM и т.п.)
           echo "No extra deps configured"
 
-      - name: Clean & Archive Release
+      - name: Clean & Build Release (unsigned)
         run: |
           set -e
           mkdir -p build
-          xcodebuild clean -scheme SaneBar -configuration Release
-          xcodebuild -scheme SaneBar -configuration Release -archivePath build/SaneBar.xcarchive archive
+          xcodebuild clean -scheme SaneBar -configuration Release CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
+          xcodebuild -scheme SaneBar -configuration Release -sdk macosx BUILD_DIR=build CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
 
       - name: Package .app -> .zip and .dmg
         run: |
           set -e
-          APP_PATH="build/SaneBar.xcarchive/Products/Applications/SaneBar.app"
+          APP_PATH="build/Release/SaneBar.app"
           if [ -d "$APP_PATH" ]; then
             cp -R "$APP_PATH" build/
             pushd build
