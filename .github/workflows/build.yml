@@ -35,7 +35,6 @@ jobs:
             CODE_SIGN_IDENTITY="-" \
             CODE_SIGNING_REQUIRED=YES \
             CODE_SIGNING_ALLOWED=YES \
-            CODE_SIGN_ENTITLEMENTS=SaneBar/SaneBar.entitlements \
             ENABLE_HARDENED_RUNTIME=YES
 
       - name: Package .app -> .zip and .dmg
