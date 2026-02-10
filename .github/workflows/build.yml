@@ -1,4 +1,4 @@
-name: macOS CI & Release (unsigned, archive)
+name: macOS CI & Release
 
 on:
   push:
@@ -10,31 +10,33 @@ on:
 
 jobs:
   build:
-    name: Build (macOS Release, unsigned archive)
-    runs-on: macos-latest
+    name: Build (macOS Release, ad-hoc signed)
+    runs-on: macos-15
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install dependencies (if any)
-        run: |
-          echo "No extra deps configured"
+      - name: Select Xcode 16
+        run: sudo xcode-select -s /Applications/Xcode_16.2.app/Contents/Developer
 
-      - name: Clean & Archive Release (ad-hoc signed)
+      - name: Build & Test (via SaneMaster)
+        run: |
+          chmod +x scripts/SaneMaster.rb
+          ./scripts/SaneMaster.rb verify
+
+      - name: Archive Release (ad-hoc signed)
         run: |
           set -e
           mkdir -p build
-          xcodebuild clean -scheme SaneBar -configuration Release \
+          xcodebuild clean archive \
+            -scheme SaneBar \
+            -configuration Release \
+            -archivePath build/SaneBar.xcarchive \
             CODE_SIGN_IDENTITY="-" \
             CODE_SIGNING_REQUIRED=YES \
             CODE_SIGNING_ALLOWED=YES \
-            CODE_SIGN_ENTITLEMENTS=SaneBar/SaneBar.entitlements
-          xcodebuild -scheme SaneBar -configuration Release \
-            -archivePath build/SaneBar.xcarchive archive \
-            CODE_SIGN_IDENTITY="-" \
-            CODE_SIGNING_REQUIRED=YES \
-            CODE_SIGNING_ALLOWED=YES \
-            CODE_SIGN_ENTITLEMENTS=SaneBar/SaneBar.entitlements
+            CODE_SIGN_ENTITLEMENTS=SaneBar/SaneBar.entitlements \
+            ENABLE_HARDENED_RUNTIME=YES
 
       - name: Package .app -> .zip and .dmg
         run: |
