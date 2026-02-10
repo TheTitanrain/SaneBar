@@ -56,14 +56,22 @@ jobs:
     needs: build
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
-  
+
     steps:
       - uses: actions/checkout@v4
-  
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: SaneBar-artifacts
+          path: build
+
       - name: Create GitHub Release and upload assets
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ github.ref_name }}
           token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts: SaneBar-artifacts
+          artifacts: |
+            build/SaneBar.dmg
+            build/SaneBar.zip
           makeLatest: true
