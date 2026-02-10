@@ -1,20 +1,80 @@
-# This workflow will build a Swift project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-swift
-
-name: Swift
+name: macOS CI & Release
 
 on:
   push:
     branches: [ "main" ]
+    tags: [ "v*" ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch: {}
 
 jobs:
   build:
-
+    name: Build (macOS Release)
     runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build
-      run: xcodebuild -scheme SaneBar -configuration Debug build
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies (if any)
+        run: |
+          # Добавьте тут команды для установки зависимостей, если у вас есть (например, CocoaPods)
+          # pod install --project-directory=.
+          echo "No extra deps configured"
+
+      - name: Clean & Archive Release
+        run: |
+          set -e
+          mkdir -p build
+          xcodebuild clean -scheme SaneBar -configuration Release
+          xcodebuild -scheme SaneBar -configuration Release -archivePath build/SaneBar.xcarchive archive
+
+      - name: Package .app -> .zip and .dmg
+        run: |
+          set -e
+          APP_PATH="build/SaneBar.xcarchive/Products/Applications/SaneBar.app"
+          if [ -d "$APP_PATH" ]; then
+            cp -R "$APP_PATH" build/
+            pushd build
+            # Zip (with resource forks preserved)
+            ditto -c -k --sequesterRsrc --keepParent "SaneBar.app" "SaneBar.zip"
+            # DMG (compressed, unsigned)
+            hdiutil create -volname "SaneBar" -srcfolder "SaneBar.app" -ov -format UDZO "SaneBar.dmg"
+            popd
+          else
+            echo "App not found at $APP_PATH"
+            ls -R build || true
+            exit 1
+          fi
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: SaneBar-artifacts
+          path: |
+            build/SaneBar.dmg
+            build/SaneBar.zip
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: SaneBar-artifacts
+          path: build
+
+      - name: Create GitHub Release and upload assets
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ github.ref_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            build/SaneBar.dmg
+            build/SaneBar.zip
