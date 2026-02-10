@@ -46,13 +46,75 @@ Always-hidden promoted from experimental to permanent first-class feature:
 
 ---
 
+## Cross-Repo Dox Fix & Name Cleanup (Feb 9, committed + pushed)
+
+### Problem
+Real name "Stephan Joseph" and username "stephanjoseph" appeared in public repos, websites, and private infra. Brand name is "Mr. Sane" (person) / "SaneApps" (org). GitHub/X handle is `MrSaneApps`.
+
+### Changes Made (9 repos, all pushed)
+
+| Repo | Commit | What Changed |
+|------|--------|-------------|
+| **SaneBar** | `2cf19fe`, `03cf217` | README (icon styles 6→5, removed Hide Main Icon, added Script Trigger), marketing dox fixes, `.saneprocess` signing identity genericized |
+| **SaneClip** | `bc78cb3` | `docs/privacy.html`: "Stephan Joseph" → "Mr. Sane" |
+| **SaneHosts** | `caa1c60` | `SECURITY.md`: "Stephan Joseph" → "Mr. Sane" |
+| **SaneVideo** | `3d616de` | `SaneVideoApp.swift`: author comment → "Mr. Sane" |
+| **SaneAI** | `7e84fa1` | `SECURITY.md`: email → `hi@saneapps.com`; `CONTRIBUTING.md`: GitHub URL → `sane-apps/SaneAI` |
+| **SaneSync** | `6ea0561` | `project.pbxproj`: signing identity genericized |
+| **SaneProcess** | `e633b24` | `LICENSE`: copyright → "Mr. Sane / SaneApps"; `DEVELOPER_SETUP.md`: signing identity genericized |
+| **SaneUI** | `6e602f3` | `LICENSE`: copyright → "Mr. Sane / SaneApps" |
+| **saneapps.com** | `b49278a` | `index.html` + `guides.html`: 6x `stephanjoseph` → `MrSaneApps` in sponsor/footer links |
+
+### Local-Only Fixes (not git repos)
+
+- `SaneProcess-templates/`: LICENSE, release.yml, setup_new_app.sh, DEVELOPMENT_ENVIRONMENT.md, SANEAPPS_RELEASE_PROCESS.md — all genericized
+- `cloudflare-workers/README.md`: account email genericized
+- `DISASTER_RECOVERY.md`: team name updated (gitignored, has credentials)
+
+### Intentionally Left As-Is
+
+- **fastlane/Appfile** — `stephanjoseph2007@gmail.com` is the actual Apple ID login (changing breaks auth)
+- **sane-email-automation/wrangler.toml** — functional `OWNER_EMAIL` for Cloudflare email routing
+- **`.claude/research_findings.jsonl`** — auto-generated logs with old GitHub API queries
+- **`.wrangler/state/` binary blobs** — local R2 cache of old DMGs
+- **spiritnword.com** — user's personal site, will deal with later
+
+### Signing Identity
+
+Apple cert is literally named `"Developer ID Application: Stephan Joseph (M78L6FXD48)"` — can't change the cert. All config files now use generic `"Developer ID Application"` which `codesign` resolves automatically to the only matching cert in keychain. Verified this works.
+
+### Sponsor Links
+
+All websites verified: `github.com/sponsors/MrSaneApps` — correct across saneapps.com, sanebar.com, saneclip.com, saneclick.com, sanehosts.com.
+
+---
+
+## README Accuracy Fixes (Feb 9, committed in `2cf19fe`)
+
+- **Icon styles**: 6 → 5 built-in (removed "plus" — doesn't exist in `MenuBarIconStyle` enum)
+- **Hide Main Icon**: Removed from README (deprecated — forced to `false` in `MenuBarManager.swift:617-621`)
+- **Script Trigger**: Added to Automatic Triggers section (exists in `ScriptTriggerService.swift`, UI in `RulesSettingsView.swift`)
+- **SaneClick GPL/MIT**: Already fixed (line 191 says GPL v3)
+
+---
+
 ## Documentation State
 
-- **README.md** — Updated Feb 9: Graduated always-hidden, documented second menu bar, onboarding, zone management, comparison table
+- **README.md** — Updated Feb 9: Graduated always-hidden, documented second menu bar, onboarding, zone management, comparison table, icon styles corrected
 - **docs/index.html** — Updated Feb 9: Comparison table + feature cards (screenshots needed)
 - **ARCHITECTURE.md** — Updated Feb 9: "Icon Moving Pipeline" section
 - **DOCS_AUDIT_FINDINGS.md** — Created Feb 9: Full 14-perspective audit (7.7/10 overall)
 - **research.md** — Trimmed to ~105 lines. Icon moving graduated to ARCHITECTURE.md.
+
+---
+
+## GitHub Issues
+
+| Issue | Status | Notes |
+|-------|--------|-------|
+| **#44** | RESOLVED | External contributor signing fix — all 5 repos patched, reply posted |
+| **#42** | Open | Script triggers request — needs acknowledgment (SHOW DRAFT FIRST) |
+| **#41** | Open | Secondary panel request — plan in research.md, no code yet |
 
 ---
 
@@ -71,6 +133,11 @@ Always-hidden promoted from experimental to permanent first-class feature:
 - **MenuBarSearchView extraction**: 1046 lines → split zone helpers + actions (#6)
 - **Website**: Update sanebar.com to fully match current feature set (#5)
 
+### Feature Documentation Gaps (from audit)
+- **SaneVideo**: 17 undocumented features in README
+- **SaneClip**: ~12 missing features (user working on this themselves)
+- **SaneClick**: Custom categories undocumented
+
 ---
 
 ## CRITICAL RULES (Learned the Hard Way)
@@ -84,6 +151,9 @@ Always-hidden promoted from experimental to permanent first-class feature:
 7. **NEVER implement "fixes" from audits without verifying the bug exists in current code.**
 8. **Read ARCHITECTURE.md § Icon Moving before touching move code.**
 9. **showAll() is required for ALL moves, not just move-to-visible.**
+10. **Brand: "Mr. Sane" (person), "SaneApps" (org), `MrSaneApps` (GitHub/X handle).** Never "Mr. SaneApps".
+11. **Signing identity: use generic `"Developer ID Application"`** — codesign resolves automatically.
+12. **Don't ask questions you can answer yourself** — use `gh api`, `grep`, etc.
 
 ---
 
@@ -98,81 +168,25 @@ Always-hidden promoted from experimental to permanent first-class feature:
 
 ---
 
-### GitHub Issue #44 — External Contributors Signing Fix (Feb 9, committed + pushed)
-
-Christopher Bradshaw reported inability to build from source due to code signing requirements.
-- **Root cause:** `DEVELOPMENT_TEAM` in base settings forced all configs (including Debug) to require the team's cert
-- **Fix applied to ALL 5 public repos:** SaneBar, SaneClip, SaneSync, SaneClick, SaneVideo
-- Moved `DEVELOPMENT_TEAM` to Release/Release-AppStore configs only
-- Changed Debug `CODE_SIGN_IDENTITY` to `"-"` (ad-hoc signing)
-- Created `SaneMaster_standalone.rb` for each app (no monorepo dependency)
-- **Commits:** SaneBar `bae71a5`, SaneClip `253d7db`, SaneSync `f708394`, SaneClick `e3c5d16`, SaneVideo `b02abd8`
-- **GitHub reply posted** as Mr. Sane with build instructions
-
-### README Audit (Feb 9, in progress)
-
-Ran 4-agent audit comparing README claims against actual code for SaneBar, SaneClip, SaneClick, and all websites.
-
-**SaneBar README updated** with:
-- Removed stale "click-to-toggle" gesture (removed in v1.0.17)
-- Fixed onboarding from "5-page" to 3-page
-- Replaced "Diagnostics" section with Space Analyzer + Icon Groups/Smart Categories
-- Added: Custom Menu Bar Icon (6 styles), Light/Dark tinting, Extra Dividers (0-12), Hide Main Icon
-- Added: App Change trigger, External Monitor auto-show
-- Updated Configuration table (removed Experimental tab, added new features)
-- Fixed Liquid Glass claim (now "ready for" not "works on")
-
-**SaneClick README updated** with:
-- Added 5 new features to table: Selection Count Filtering, Extension Match Modes, Menu Bar Quick Access, Extension Status Monitor, App Visibility
-- Added First Launch (onboarding) section
-- Added Troubleshooting section (extension status colors)
-- Expanded Import/Export (conflict resolution modes)
-- Updated Usage section with icon picker, notifications
-
-**SaneClip README** — User is working on this themselves, skipped
-
-**Websites** — All 3 active sites current: sanebar.com, saneclip.com, saneclick.com. Pricing correct ($6.99). sanevideo.com still placeholder (expected).
-
----
-
 ## NEXT SESSION — Priorities
 
-1. **Screenshots needed** (see list below)
-2. **Commit README changes** for SaneBar and SaneClick (updated this session but not yet committed)
-3. **Fix AH-to-Hidden verification** — false negative when separators are flush
-4. **Speed optimization** — explore shorter delays, parallel operations
-5. **MenuBarSearchView.swift extraction** — 1046 lines, over lint limit
-6. **Security hardening** — AppleScript sanitization, auth for HideCommand
-7. **CoinTick (wide icon) testing** — re-test on Mac Mini
-
-### Screenshots Needed
-
-**SaneBar** (screenshots from Jan 12-25 predate features added in v1.0.17-1.0.18):
-- Custom Menu Bar Icon picker (6 styles + custom upload)
-- Space Analyzer view
-- Icon Groups / Smart Categories in Find Icon
-- Extra Dividers configuration
-- Light/Dark mode separate tinting
-- Second Menu Bar (feature card on website needs screenshot)
-- Always-Hidden Zone (feature card on website needs screenshot)
-- Onboarding wizard (3-page flow)
-- Updated Appearance settings tab (many new options)
-
-**SaneClick:**
-- Script testing with file picker and output preview
-- Extension status monitoring (green/orange/red)
-- Welcome/onboarding flow with starter packs
-- App visibility controls
-
-**SaneClip** — User managing
+1. **Fix AH-to-Hidden verification** — false negative when separators are flush
+2. **Speed optimization** — explore shorter delays, parallel operations
+3. **MenuBarSearchView.swift extraction** — 1046 lines, over lint limit
+4. **Security hardening** — AppleScript sanitization, auth for HideCommand
+5. **CoinTick (wide icon) testing** — re-test on Mac Mini
+6. **Screenshots** — needed for website feature cards
+7. **GitHub Issue #42** — acknowledge script triggers request (SHOW DRAFT FIRST)
+8. **SaneVideo README** — 17 undocumented features
 
 ---
 
 ## Ongoing Items
 
-1. **SaneBar v1.0.19**: Always-hidden graduated, icon moving working, docs updated, README refreshed
+1. **SaneBar v1.0.19**: Always-hidden graduated, icon moving working, docs updated, README refreshed, dox cleaned
 2. **Secondary Panel**: Plan complete in research.md, no code yet, user demand growing (#41, #42)
 3. **GitHub Issue #42**: Script triggers request — needs acknowledgment (SHOW DRAFT FIRST)
 4. **GitHub Issue #44**: RESOLVED — signing fix committed and pushed, reply posted
 5. **HealsCodes video**: `~/Desktop/Screenshots/HealsCodes-always-hidden-move-bug.mp4` — unreviewed
-6. **Cross-app signing fix**: All 5 repos fixed and pushed (SaneBar, SaneClip, SaneSync, SaneClick, SaneVideo)
+6. **Cross-app signing fix**: All 5 repos fixed and pushed
+7. **Cross-repo dox fix**: All 9 repos cleaned, pushed, verified
