@@ -109,9 +109,9 @@ All SaneBar issues are closed. No open issues.
 
 ## NEXT SESSION — Priorities
 
-1. **URGENT: Website update** — Show both viewing modes (Find Icon + floating panel) on sanebar.com
-2. **Full notarized release run** — Verify ZIP pipeline end-to-end with notarization
-3. **Commit uncommitted changes** — release.sh, SaneBarApp.swift, sane_release_guard.rb
+1. **Run `/docs-audit`** — Skipped at end of this session, must run first thing
+2. **URGENT: Website update** — Show both viewing modes (Find Icon + floating panel) on sanebar.com
+3. **Full notarized release run** — Verify ZIP pipeline end-to-end with notarization
 4. **MenuBarSearchView.swift extraction** — 1046 lines, over lint limit
 5. **Security hardening** — AppleScript sanitization, auth for HideCommand
 6. **SaneVideo README** — 17 undocumented features
