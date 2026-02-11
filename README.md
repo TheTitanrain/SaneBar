@@ -277,6 +277,17 @@ cd SaneBar
 xcodebuild -scheme SaneBar -configuration Debug build
 ```
 
+<summary>Running an unsigned build</summary>
+
+If you built SaneBar from source or downloaded a CI build (not notarized), macOS Gatekeeper will block it. To open it:
+
+1. Try to open `SaneBar.app` — macOS will show a warning
+2. Go to **Apple menu → System Settings → Privacy & Security**
+3. Scroll to **Security** and click **Open Anyway**
+4. Enter your password and click OK
+
+After this, SaneBar opens normally like any other app. [More details (Apple Support)](https://support.apple.com/en-us/guide/mac-help/mh40616/mac)
+
 ### Project Structure
 
 ```
