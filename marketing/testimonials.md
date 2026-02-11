@@ -84,7 +84,7 @@ Use these for website, App Store descriptions, and marketing materials.
 | "Stable and effective" | Overall impression |
 | "Only tool offering Touch ID/password protection" | Security feature praise |
 | "Extensive personalization options" | Customization |
-| "$5 one-time purchase includes all future updates" | Pricing model |
+| "$6.99 one-time purchase includes all future updates" | Pricing model |
 
 **Criticisms:**
 - Doesn't solve notch-area conflicts for users with many menu bar items

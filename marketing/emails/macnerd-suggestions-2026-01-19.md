@@ -140,7 +140,7 @@ But: It still feels like a strong challenger, not yet the undisputed leader.
 | Tier | Price | Features |
 |------|-------|----------|
 | Free | $0 | Hide/show + basic grouping |
-| Pro | $9–15 one-time | Rules engine, profiles, automation, security |
+| Pro | $6.99 one-time | Rules engine, profiles, automation, security |
 | Lifetime | $19–25 | All features forever |
 
 No subscriptions. Ever.
@@ -184,7 +184,7 @@ If SaneBar implemented even 50–60% of this roadmap, it would become:
 - Zero-Telemetry Guarantee
 - Per-Display settings (external monitor detection)
 - Gesture Controls (scroll, hover, click)
-- $5 one-time pricing (no subscriptions)
+- $6.99 one-time pricing (no subscriptions)
 
 ### 🔄 Partially Implemented
 - Deterministic Ordering (Ice pattern, mostly stable)
