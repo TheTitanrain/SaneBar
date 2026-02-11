@@ -19,39 +19,42 @@ jobs:
       - name: Select Xcode 16.3 (Swift 6.1)
         run: sudo xcode-select -s /Applications/Xcode_16.3.app/Contents/Developer
 
-      - name: Archive Release (ad-hoc signed)
+      - name: Build Release
         run: |
           set -e
           mkdir -p build
-          xcodebuild clean archive \
+          xcodebuild build \
             -scheme SaneBar \
             -configuration Release \
-            -archivePath build/SaneBar.xcarchive \
+            -derivedDataPath build/DerivedData \
             CODE_SIGN_IDENTITY="-" \
-            CODE_SIGNING_REQUIRED=YES \
-            CODE_SIGNING_ALLOWED=YES \
-            ENABLE_HARDENED_RUNTIME=YES
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=YES
 
-      - name: Re-sign embedded frameworks (match ad-hoc identity)
+      - name: Prepare and sign app bundle
         run: |
           set -e
-          APP_PATH="build/SaneBar.xcarchive/Products/Applications/SaneBar.app"
-          FRAMEWORKS_DIR="$APP_PATH/Contents/Frameworks"
+          APP_SRC="build/DerivedData/Build/Products/Release/SaneBar.app"
+          APP_DST="build/SaneBar.app"
+          cp -R "$APP_SRC" "$APP_DST"
+
+          # Sign frameworks first (inside-out), then the app
+          FRAMEWORKS_DIR="$APP_DST/Contents/Frameworks"
           if [ -d "$FRAMEWORKS_DIR" ]; then
-            find "$FRAMEWORKS_DIR" -name '*.framework' -o -name '*.dylib' | while read fw; do
-              echo "Re-signing: $fw"
-              codesign --force --sign "-" --timestamp=none --preserve-metadata=identifier,entitlements "$fw"
+            find "$FRAMEWORKS_DIR" \( -name '*.framework' -o -name '*.dylib' \) | while read fw; do
+              echo "Signing: $fw"
+              codesign --force --sign "-" "$fw"
             done
-            # Re-sign the main binary last
-            codesign --force --sign "-" --timestamp=none --preserve-metadata=identifier,entitlements "$APP_PATH"
           fi
+          codesign --force --sign "-" "$APP_DST"
+
+          # Verify
+          codesign --verify --verbose "$APP_DST"
 
       - name: Package .app -> .zip and .dmg
         run: |
           set -e
-          APP_PATH="build/SaneBar.xcarchive/Products/Applications/SaneBar.app"
-          if [ -d "$APP_PATH" ]; then
-            cp -R "$APP_PATH" build/
+          if [ -d "build/SaneBar.app" ]; then
             pushd build
             ditto -c -k --sequesterRsrc --keepParent "SaneBar.app" "SaneBar.zip"
             hdiutil create -volname "SaneBar" -srcfolder "SaneBar.app" -ov -format UDZO "SaneBar.dmg"
