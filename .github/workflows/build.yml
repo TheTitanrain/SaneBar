@@ -28,28 +28,16 @@ jobs:
             -configuration Release \
             -derivedDataPath build/DerivedData \
             CODE_SIGN_IDENTITY="-" \
-            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_REQUIRED=YES \
             CODE_SIGNING_ALLOWED=YES
 
-      - name: Prepare and sign app bundle
+      - name: Re-sign app bundle (deep)
         run: |
           set -e
           APP_SRC="build/DerivedData/Build/Products/Release/SaneBar.app"
-          APP_DST="build/SaneBar.app"
-          cp -R "$APP_SRC" "$APP_DST"
-
-          # Sign frameworks first (inside-out), then the app
-          FRAMEWORKS_DIR="$APP_DST/Contents/Frameworks"
-          if [ -d "$FRAMEWORKS_DIR" ]; then
-            find "$FRAMEWORKS_DIR" \( -name '*.framework' -o -name '*.dylib' \) | while read fw; do
-              echo "Signing: $fw"
-              codesign --force --sign "-" "$fw"
-            done
-          fi
-          codesign --force --sign "-" "$APP_DST"
-
-          # Verify
-          codesign --verify --verbose "$APP_DST"
+          cp -R "$APP_SRC" build/SaneBar.app
+          codesign --deep --force --sign "-" build/SaneBar.app
+          codesign --verify --deep --verbose build/SaneBar.app
 
       - name: Package .app -> .zip and .dmg
         run: |
