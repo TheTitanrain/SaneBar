@@ -32,6 +32,20 @@ jobs:
             CODE_SIGNING_ALLOWED=YES \
             ENABLE_HARDENED_RUNTIME=YES
 
+      - name: Re-sign embedded frameworks (match ad-hoc identity)
+        run: |
+          set -e
+          APP_PATH="build/SaneBar.xcarchive/Products/Applications/SaneBar.app"
+          FRAMEWORKS_DIR="$APP_PATH/Contents/Frameworks"
+          if [ -d "$FRAMEWORKS_DIR" ]; then
+            find "$FRAMEWORKS_DIR" -name '*.framework' -o -name '*.dylib' | while read fw; do
+              echo "Re-signing: $fw"
+              codesign --force --sign "-" --timestamp=none --preserve-metadata=identifier,entitlements "$fw"
+            done
+            # Re-sign the main binary last
+            codesign --force --sign "-" --timestamp=none --preserve-metadata=identifier,entitlements "$APP_PATH"
+          fi
+
       - name: Package .app -> .zip and .dmg
         run: |
           set -e
