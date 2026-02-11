@@ -79,6 +79,7 @@ class SaneBarAppDelegate: NSObject, NSApplicationDelegate {
     }
 
     /// Returns true if the app is being moved (caller should return early).
+    @MainActor
     private func moveToApplicationsFolderIfNeeded() -> Bool {
         let appPath = Bundle.main.bundlePath
         let appName = Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String ?? "SaneBar"
