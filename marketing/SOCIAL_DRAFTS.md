@@ -16,7 +16,7 @@ Menu bar manager for macOS with:
 • Zero telemetry (verify with Little Snitch)
 • Works on macOS Tahoe
 
-$5 or build from source.
+$6.99 or build from source.
 
 https://www.producthunt.com/posts/sanebar
 ```
@@ -45,7 +45,7 @@ I built SaneBar because I had the same problem.
 
 • Actually works on 26.x
 • Open source
-• $5 one-time (or free to build)
+• $6.99 one-time (or free to build)
 
 https://sanebar.com
 ```
@@ -66,7 +66,7 @@ Built a menu bar manager for macOS that doesn't spy on you.
 Verify yourself:
 `sudo lsof -i -n -P | grep SaneBar` returns nothing.
 
-$5 or build from source: https://sanebar.com
+$6.99 or build from source: https://sanebar.com
 
 #macOS #privacy #indiedev #opensource
 ```
@@ -99,7 +99,7 @@ Website: https://sanebar.com
 ```
 Had the same issue. Ended up building my own: sanebar.com
 
-Works on Tahoe, open source, $5 or build yourself.
+Works on Tahoe, open source, $6.99 or build yourself.
 ```
 
 ### Respond to Bartender concerns
