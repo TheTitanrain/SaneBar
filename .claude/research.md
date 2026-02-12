@@ -790,6 +790,161 @@ Sections graduated:
 
 ---
 
+## OSLogStore Error Fix
+
+**Updated:** 2026-02-11 | **Status:** verified | **TTL:** 30d
+**Source:** Web search (Apple Developer Forums, GitHub code search, macOS logging documentation), SaneBar DiagnosticsService.swift analysis
+
+### The Error
+
+SaneBar user on macOS (non-privileged account) gets `Foundation._GenericObjCError error 0` when DiagnosticsService tries to collect recent logs via OSLogStore:
+
+```swift
+let store = try OSLogStore(scope: .currentProcessIdentifier)
+let entries = try store.getEntries(at: position, matching: predicate)
+// ↑ Throws: Foundation._GenericObjCError error 0
+```
+
+**Location:** `Core/Services/DiagnosticsService.swift:147-152`
+
+### Root Cause
+
+**OSLogStore requires admin user permissions** to access the unified logging system on macOS. According to Apple Developer Forums ([thread 691093](https://developer.apple.com/forums/thread/691093)):
+
+> "To access the local unified logging system, the caller must be run by an admin account and have the `com.apple.logging.local-store` entitlement. However, as long as you're running as an admin user, you don't need the entitlement."
+
+**For non-admin users:** There is no API workaround. The `.currentProcessIdentifier` scope still requires admin privileges despite being process-scoped.
+
+**The error:** `Foundation._GenericObjCError error 0` is a generic Objective-C bridge error that appears when the underlying system call fails due to permissions. The actual error (EPERM, access denied) is swallowed by the OS and wrapped in this opaque error.
+
+### Evidence from Production Apps
+
+**GitHub code search** found 4 other apps using OSLogStore with try/catch error handling:
+
+1. **DuckDuckGo Browsers** ([apple-browsers](https://github.com/duckduckgo/apple-browsers/blob/main/iOS/DuckDuckGo/RemoteMessagingDebugViewController.swift)) — Wraps OSLogStore in try/catch, falls back to "Log collection unavailable" message
+2. **TextWarden** ([textwarden](https://github.com/PhilipSchmid/textwarden/blob/main/Sources/Models/DiagnosticReport.swift)) — Similar pattern: try OSLogStore, catch returns empty array
+3. **Retrace** ([retrace](https://github.com/haseab/retrace/blob/main/UI/Views/Feedback/FeedbackService.swift)) — Uses OSLogStore but only in admin context (app requires admin for core functionality)
+4. **SaneBar** (this codebase) — Already has correct try/catch pattern, returns error LogEntry (line 173-177)
+
+**Ice (jordanbaird/Ice)** — The popular menu bar manager ([12.7k stars](https://github.com/jordanbaird/Ice)) does NOT use OSLogStore. Could not find Logger.swift or OSLog usage in the repo. Ice likely uses file-based logging or doesn't collect diagnostics programmatically.
+
+### Fallback Alternatives
+
+#### Option 1: `log show` Command Line (Requires TCC Prompt)
+
+Users can manually collect logs via Terminal:
+
+```bash
+log show --predicate 'subsystem == "com.sanebar.app"' --last 5m --style syslog > ~/Desktop/sanebar-logs.txt
+```
+
+**Pros:** Works without admin account, captures all log levels
+**Cons:** Requires Terminal usage, still needs Full Disk Access TCC prompt for some log sources
+
+#### Option 2: File-Based Logging Fallback (OSLog + File Write)
+
+Apps like **CocoaLumberjack** ([CleanroomLogger](https://github.com/emaloney/CleanroomLogger)) and **SwiftyBeaver** provide file-based logging alongside OSLog. Pattern:
+
+```swift
+import OSLog
+let logger = Logger(subsystem: "com.sanebar.app", category: "diagnostics")
+
+// Log normally
+logger.info("App launched")
+
+// For diagnostics: ALSO write to file
+let logURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    .appendingPathComponent("sanebar-diagnostics.log")
+try? "[\(Date())] [INFO] App launched\n".data(using: .utf8)?.write(to: logURL, options: .atomic)
+```
+
+**Pros:** Works in non-admin accounts, no permissions needed
+**Cons:** Requires parallel logging infrastructure, file management, disk usage
+
+#### Option 3: User Instructions + Graceful Degradation (RECOMMENDED)
+
+**Current SaneBar implementation is already correct** (DiagnosticsService.swift:172-178):
+
+```swift
+} catch {
+    return [DiagnosticReport.LogEntry(
+        timestamp: Date(),
+        level: "ERROR",
+        message: "Failed to collect logs: \(error.localizedDescription)"
+    )]
+}
+```
+
+**Recommended UX improvement:**
+
+1. **In FeedbackView**, detect if log collection failed (check for "Failed to collect logs" entry)
+2. **Show help text:** "Log collection requires admin privileges. To include logs, run this command in Terminal: `log show --predicate 'subsystem == \"com.sanebar.app\"' --last 5m > ~/Desktop/sanebar-logs.txt`"
+3. **Offer "Copy Command" button** for easy Terminal paste
+4. **Don't block feedback submission** — diagnostics without logs are still useful (environment, settings, menu bar item counts)
+
+### Why Not File-Based Logging?
+
+**Consensus from search results:**
+
+- OSLog is Apple's recommended approach ([SwiftLee guide](https://www.avanderlee.com/debugging/oslog-unified-logging/), [roger.ml article](https://www.roger.ml/p/oslog))
+- File-based logging adds complexity: rotation, size limits, privacy (log files contain user paths)
+- OSLog already handles privacy (redacts sensitive data), compression, and retention
+- For **diagnostic collection specifically**, graceful degradation (fallback to manual Terminal command) is better UX than maintaining parallel file logging
+
+**CocoaLumberjack/SwiftyBeaver are overkill** for SaneBar's use case. They're designed for apps that need:
+- Remote logging (crash analytics services)
+- Multi-destination logging (console + file + network)
+- Custom formatters
+
+SaneBar just needs: **"Give me the last 5 minutes of my own logs for bug reports."**
+
+### Implementation Status in SaneBar
+
+**Already correct** (no code changes needed):
+
+- ✅ Try/catch wraps OSLogStore (line 146-178)
+- ✅ Graceful error handling returns error LogEntry instead of crashing
+- ✅ Privacy: `sanitize()` redacts file paths, emails, API keys (lines 365-391)
+- ✅ Time-bounded: Only last 5 minutes (line 148)
+- ✅ Subsystem-scoped: Only `com.sanebar.app` logs (line 151)
+
+**Optional UX enhancement:**
+
+Add to `UI/Settings/FeedbackView.swift` (when showing diagnostic report preview):
+
+```swift
+if diagnostics.recentLogs.contains(where: { $0.message.contains("Failed to collect logs") }) {
+    GroupBox {
+        Text("Log collection requires admin privileges.")
+        Button("Copy Terminal Command") {
+            NSPasteboard.general.setString(
+                "log show --predicate 'subsystem == \"com.sanebar.app\"' --last 5m > ~/Desktop/sanebar-logs.txt",
+                forType: .string
+            )
+        }
+    }
+}
+```
+
+### Key Takeaways
+
+1. **OSLogStore + non-admin account = `Foundation._GenericObjCError error 0`** (permission denied)
+2. **No programmatic workaround exists** — this is an OS security restriction
+3. **File-based logging is overkill** for diagnostic collection use case
+4. **Current implementation is correct** — error is caught, feedback still submittable
+5. **UX improvement:** Detect log collection failure, show Terminal command as fallback
+6. **Ice doesn't use OSLogStore** — competitor analysis shows most menu bar apps don't collect logs programmatically
+
+### References
+
+- [Apple Developer Forums — OSLogStore thread 691093](https://developer.apple.com/forums/thread/691093)
+- [Kandji — Mac Logging and the log Command](https://www.kandji.io/blog/mac-logging-and-the-log-command-a-guide-for-apple-admins)
+- [SwiftLee — OSLog Unified Logging](https://www.avanderlee.com/debugging/oslog-unified-logging/)
+- [SS64 — log command reference](https://ss64.com/mac/log.html)
+- [Medium — Making Sense of macOS Logs](https://medium.com/@cyberengage.org/making-sense-of-macos-logs-part1-a-user-friendly-guide-8f367b388184)
+
+---
+
 ### Graduated Sections
 
 - **Icon Moving Pipeline** (graduated Feb 9): All API research, competitor analysis, 9-bug RCA → `ARCHITECTURE.md` § "Icon Moving Pipeline"
